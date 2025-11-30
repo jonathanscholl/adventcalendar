@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-cream via-warm-beige to-blush-pink/30 min-h-screen;
+    background-attachment: fixed;
+    /* Prevent text size adjustment on iOS */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Optimize font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Optimize touch interactions */
+  button, a {
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  /* Snowflake animation background */
+  .snowflake {
+    position: absolute;
+    color: white;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    animation: snowfall linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes snowfall {
+    0% {
+      transform: translateY(-100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Subtle sparkle effect */
+  .sparkle {
+    position: relative;
+  }
+
+  .sparkle::before {
+    content: '✨';
+    position: absolute;
+    animation: sparkle 2s ease-in-out infinite;
+  }
+}
+
+/* Custom scrollbar - hidden on mobile for cleaner look */
+@media (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 248, 225, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(211, 47, 47, 0.3);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(211, 47, 47, 0.5);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  /* Reduce animation complexity on mobile for better performance */
+  .snowflake {
+    animation-duration: 8s !important;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+}
+
