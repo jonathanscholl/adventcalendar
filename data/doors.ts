@@ -68,8 +68,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 8,
     date: 8,
-    title: "Dreams Come True",
-    message: "May all your dreams come true this holiday season! 🌟",
+    title: "Gutschein",
+    message: "Für Kochen eines Gerichts deiner Wahl",
+    image: "/images/chef.png",
   },
   {
     id: 9,
