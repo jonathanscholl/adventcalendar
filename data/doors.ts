@@ -75,8 +75,8 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 9,
     date: 9,
-    title: "Special Day",
-    message: "Every day with you is special, but today is extra special! 🎄",
+    title: "Du geile Schlange",
+    message: "Ein geiles Spiel für eine geile Schlange",
     link: "/snake",
   },
   {
