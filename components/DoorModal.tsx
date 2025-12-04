@@ -76,6 +76,29 @@ export default function DoorModal({ door, isOpen, onClose }: DoorModalProps) {
                   </h2>
                 </div>
 
+                {/* Video */}
+                {door.video && (
+                  <motion.div
+                    className="w-full rounded-xl sm:rounded-2xl overflow-hidden mb-5 sm:mb-6 shadow-lg bg-black"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <video
+                      src={door.video}
+                      controls
+                      autoPlay
+                      loop
+                      muted
+                      className="w-full h-auto max-h-[60vh] object-contain"
+                      playsInline
+                      preload="auto"
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </motion.div>
+                )}
+
                 {/* Image */}
                 {door.image && (
                   <motion.div

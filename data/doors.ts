@@ -2,9 +2,10 @@ export type DoorContent = {
   id: number;
   date: number; // Day of December (1-24)
   title: string;
-  message: string;
+  message?: string;
   image?: string;
   link?: string;
+  video?: string;
   extra?: string;
 };
 
@@ -46,22 +47,23 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 5,
     date: 5,
+    title: "Lieblingsbildi",
+    message: "Dein Lieblingsbild von uns weil du natürlich so unfassbar gut aussiehst. Aber das tust du eigentlich immer du dummkopf. Ich liebe dich bis zum Mond und zurück. Ich will den Rest meines Lebens mit dir verbringen. Eines Tages wird es nur noch wir beide sein und nicht auch noch deine Dummidankis. Ich bin immer an deiner Seite und zusammen schaffem wir alles. Ich lieeeeeebe dich",
+    image: "/images/day5.jpeg",
+  },
+  {
+    id: 6,
+    date: 6,
     title: "Wordle",
     message: "Errate das geheime Wort! hihihih",
     link: "/wordle",
   },
   {
-    id: 6,
-    date: 6,
-    title: "Starry Night",
-    message: "Just like the stars light up the night, you light up my life. ⭐",
-    image: "/images/day6.jpg",
-  },
-  {
     id: 7,
     date: 7,
-    title: "Heart Full of Love",
-    message: "My heart is full of love for you, today and always. 💖",
+    title: "Ich weiß doch auch nicht hahahahaha",
+    message: "Ich weiß doch auch nicht hahahahaha",
+    video: "/videos/day7.mp4",
   },
   {
     id: 8,
