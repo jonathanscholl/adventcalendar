@@ -215,11 +215,16 @@ export default function SnakePage() {
     setDirection(newDir);
   };
 
-  // Calculate responsive cell size - optimized for laptop
+  // Calculate responsive cell size - optimized for laptop and mobile
   const getCellSize = () => {
     if (typeof window === 'undefined') return CELL_SIZE;
-    // For laptop, use smaller cells
-    const maxWidth = Math.min(window.innerWidth - 80, 500);
+    // For mobile, use full width minus padding, for laptop use max 500px
+    const isMobile = window.innerWidth < 640;
+    const padding = isMobile ? 32 : 80; // Less padding on mobile
+    const borderWidth = 8; // 4px border on each side (4px * 2 = 8px total)
+    const maxWidth = isMobile 
+      ? window.innerWidth - padding - borderWidth
+      : Math.min(window.innerWidth - padding - borderWidth, 500 - borderWidth);
     const calculatedSize = Math.floor(maxWidth / GRID_SIZE);
     // Ensure minimum cell size
     return Math.max(calculatedSize, CELL_SIZE);
@@ -277,12 +282,14 @@ export default function SnakePage() {
         </div>
 
         {/* Game Board */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-4 px-2 sm:px-0 w-full overflow-hidden">
           <div
             className="relative border-4 border-christmas-red rounded-lg shadow-2xl overflow-hidden"
             style={{ 
-              width: gameSize, 
-              height: gameSize,
+              width: `${gameSize}px`, 
+              height: `${gameSize}px`,
+              minWidth: 0,
+              flexShrink: 0,
               backgroundColor: '#2e7d32', // Forest green background
               backgroundImage: `
                 repeating-conic-gradient(
