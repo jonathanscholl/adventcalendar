@@ -5,9 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RotateCw } from 'lucide-react';
 import Link from 'next/link';
 
-const WORD = 'SKRIKI';
+const WORDS = ['SKRIKI', 'SOPHIA', 'JONTII', 'LIEBEN'];
 const MAX_GUESSES = 6;
-const WORD_LENGTH = 6;
+
+// Helper function to get a random word
+const getRandomWord = (): string => {
+  return WORDS[Math.floor(Math.random() * WORDS.length)];
+};
 
 type LetterState = 'correct' | 'present' | 'absent' | 'empty';
 
@@ -17,6 +21,7 @@ interface Cell {
 }
 
 export default function WordlePage() {
+  const [word, setWord] = useState<string>(() => getRandomWord());
   const [guesses, setGuesses] = useState<Cell[][]>([]);
   const [currentGuess, setCurrentGuess] = useState<string>('');
   const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
@@ -25,7 +30,7 @@ export default function WordlePage() {
 
   const checkGuess = useCallback((guess: string): Cell[] => {
     const cells: Cell[] = [];
-    const wordArray = WORD.split('');
+    const wordArray = word.split('');
     const guessArray = guess.split('');
     const letterCounts = new Map<string, number>();
 
@@ -58,7 +63,7 @@ export default function WordlePage() {
     });
 
     return cells;
-  }, []);
+  }, [word]);
 
   const updateUsedLetters = useCallback((cells: Cell[]) => {
     const newUsedLetters = new Map(usedLetters);
@@ -77,7 +82,7 @@ export default function WordlePage() {
     if (gameState !== 'playing') return;
 
     if (key === 'ENTER') {
-      if (currentGuess.length === WORD_LENGTH) {
+      if (currentGuess.length === word.length) {
         const guess = currentGuess;
         const newCells = checkGuess(guess);
         const newGuesses = [...guesses, newCells];
@@ -85,7 +90,7 @@ export default function WordlePage() {
         updateUsedLetters(newCells);
         setCurrentGuess('');
 
-        if (guess === WORD) {
+        if (guess === word) {
           setGameState('won');
         } else if (newGuesses.length >= MAX_GUESSES) {
           setGameState('lost');
@@ -98,11 +103,11 @@ export default function WordlePage() {
     } else if (key === 'BACKSPACE') {
       setCurrentGuess(prev => prev.slice(0, -1));
     } else if (key.length === 1 && key.match(/[A-Za-z]/)) {
-      if (currentGuess.length < WORD_LENGTH) {
+      if (currentGuess.length < word.length) {
         setCurrentGuess(prev => prev + key.toUpperCase());
       }
     }
-  }, [currentGuess, gameState, guesses, checkGuess, updateUsedLetters]);
+  }, [currentGuess, gameState, guesses, word, checkGuess, updateUsedLetters]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -125,6 +130,7 @@ export default function WordlePage() {
   }, [handleKeyPress]);
 
   const resetGame = () => {
+    setWord(getRandomWord());
     setGuesses([]);
     setCurrentGuess('');
     setGameState('playing');
@@ -203,7 +209,7 @@ export default function WordlePage() {
                 animate={isShaking ? { x: [-10, 10, -10, 10, 0] } : {}}
                 transition={{ duration: 0.3 }}
               >
-                {Array.from({ length: WORD_LENGTH }).map((_, cellIndex) => {
+                {Array.from({ length: word.length }).map((_, cellIndex) => {
                   const cell = rowCells[cellIndex] || { letter: '', state: 'empty' as LetterState };
                   const isCurrentCell = isCurrentRow && cellIndex === currentGuess.length;
                   const letter = isCurrentRow && cellIndex < currentGuess.length
@@ -261,7 +267,7 @@ export default function WordlePage() {
                 😢 Nicht geschafft
               </h2>
               <p className="text-base sm:text-lg text-gray-700 mb-2">
-                Das Wort war: <span className="font-bold text-forest-green">{WORD}</span>
+                Das Wort war: <span className="font-bold text-forest-green">{word}</span>
               </p>
             </motion.div>
           )}

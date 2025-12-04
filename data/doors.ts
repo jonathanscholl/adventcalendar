@@ -46,8 +46,8 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 5,
     date: 5,
-    title: "Wordle Spiel",
-    message: "Rate das geheime Wort! 🎮",
+    title: "Wordle",
+    message: "Errate das geheime Wort! hihihih",
     link: "/wordle",
   },
   {
