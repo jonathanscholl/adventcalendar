@@ -18,7 +18,8 @@ export default function SnakePage() {
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
   const [direction, setDirection] = useState<Direction>(INITIAL_DIRECTION);
   const [apple, setApple] = useState<Position>({ x: 15, y: 15 });
-  const [gameState, setGameState] = useState<'playing' | 'paused' | 'gameOver'>('playing');
+  const [gameState, setGameState] = useState<'countdown' | 'playing' | 'paused' | 'gameOver'>('countdown');
+  const [countdown, setCountdown] = useState(3);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const directionRef = useRef<Direction>(INITIAL_DIRECTION);
@@ -59,6 +60,23 @@ export default function SnakePage() {
     // Self collision
     return body.some(segment => segment.x === head.x && segment.y === head.y);
   }, []);
+
+  // Countdown timer
+  useEffect(() => {
+    if (gameState !== 'countdown') return;
+
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          setGameState('playing');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdownInterval);
+  }, [gameState]);
 
   // Game loop
   useEffect(() => {
@@ -171,7 +189,8 @@ export default function SnakePage() {
     directionRef.current = INITIAL_DIRECTION;
     setApple(generateApple(INITIAL_SNAKE));
     setScore(0);
-    setGameState('playing');
+    setCountdown(3);
+    setGameState('countdown');
   };
 
   const handleDirectionButton = (newDir: Direction) => {
@@ -331,19 +350,97 @@ export default function SnakePage() {
           </div>
         </div>
 
-        {/* Game State Messages */}
+        {/* Countdown Overlay */}
+        {gameState === 'countdown' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
+          >
+            <motion.div
+              key={countdown}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: [1.2, 1], opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              className="bg-gradient-to-br from-cream to-warm-beige rounded-3xl shadow-2xl p-12 sm:p-16"
+            >
+              {countdown > 0 ? (
+                <motion.h2
+                  className="text-8xl sm:text-9xl font-bold text-christmas-red"
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {countdown}
+                </motion.h2>
+              ) : (
+                <motion.h2
+                  className="text-6xl sm:text-7xl font-bold text-forest-green"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: [0, 1.3, 1] }}
+                  transition={{ duration: 0.5 }}
+                >
+                  Los! 🎮
+                </motion.h2>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Game Over Modal */}
         {gameState === 'gameOver' && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-4 px-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
           >
-            <h2 className="text-xl sm:text-2xl font-bold text-christmas-red mb-2">
-              Game Over! 😢
-            </h2>
-            <p className="text-base text-gray-700 mb-2">
-              Drücke Leertaste oder Enter zum Neustarten
-            </p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="bg-gradient-to-br from-cream to-warm-beige rounded-3xl shadow-2xl p-8 sm:p-12 max-w-md w-full"
+            >
+              <div className="text-center">
+                <motion.h2
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                  className="text-4xl sm:text-5xl font-bold text-christmas-red mb-4"
+                >
+                  Game Over! 😢
+                </motion.h2>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mb-6"
+                >
+                  <p className="text-lg sm:text-xl text-gray-600 mb-2">Dein Score:</p>
+                  <p className="text-5xl sm:text-6xl font-bold text-christmas-red mb-4">{score}</p>
+                  
+                  {highScore > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm sm:text-base text-gray-600 mb-1">Bester Score:</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-forest-green">{highScore}</p>
+                    </div>
+                  )}
+                </motion.div>
+
+                <motion.button
+                  onClick={resetGame}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="w-full py-4 bg-christmas-red text-white rounded-xl font-semibold text-lg sm:text-xl active:bg-soft-red transition-colors shadow-lg touch-manipulation min-h-[44px] flex items-center justify-center gap-2"
+                >
+                  <RotateCw size={24} />
+                  <span>Nochmal spielen</span>
+                </motion.button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
 
